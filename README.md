@@ -4,20 +4,23 @@
 
 Built on Atlassian Forge and running on a live Jira Cloud site. It's a portfolio project on AI governance, evals and product design.
 
+<img src="docs/screens/register.png" alt="AI Register page in Jira listing five AI systems: Resume Screener High approved, Customer support chatbot Limited, Meeting notes summariser Minimal, Credit limit model Needs input, Staff mood monitor Prohibited pending">
+
+*The site-wide AI Register: one row per AI system, with its tier, review status, review-by date, flags and linked tickets.*
+
 ---
 
-## The demo in six screens
+## The demo in five screens
 
-A team is building a **resume screener**. Here's what Tierwise does with it.
+A team is building a **resume screener**. Six questions put it in the **High** tier, citing Annex III §4. Here's what happens next.
 
 | | |
 |---|---|
-| **1. Link the ticket to an AI system.** Risk is tracked per system, not per ticket. Every ticket that touches the screener inherits its tier. | <img src="docs/screens/1-link-system.png" width="360" alt="Panel asking which AI system the ticket builds, with a picker and a register-new field"> |
-| **2. Six questions → a tier, with the reason.** Hiring → **High**, citing Annex III §4. The panel also flags that a vendor model makes us the *deployer*. | <img src="docs/screens/2-high-tier.png" width="360" alt="Resume Screener rated High, pending review, with the reason Annex III section 4"> |
-| **3. Evals for the tier.** High risk needs accuracy, hallucination rate, bias across groups and human-override rate. A row only passes with a result, an evidence link and a date. The bias ratio is 0.6, under the 0.8 target. | <img src="docs/screens/3-evals-bias-fails.png" width="360" alt="Eval checklist with three passes and the bias row failing"> |
-| **4. The reviewer can't approve.** Approve stays disabled until every eval passes or an exception is logged with a reason. | <img src="docs/screens/4-approval-blocked.png" width="360" alt="Sign-off tab: can't be approved yet, eval fail on bias, Approve disabled"> |
-| **5. Fixed, re-run, approved.** The bias ratio is now 0.85. The reviewer approves with a note, and the change history records who, what and when. | <img src="docs/screens/5-approved.png" width="360" alt="Resume Screener High, approved"> |
-| **6. Jira enforces it.** A workflow rule stops any AI ticket from moving to Done until it's linked to an assessed system, and approved if High risk. | <img src="docs/screens/6-workflow-blocked.png" width="360" alt="Jira toast: Transition failed, this is an AI ticket, link it to an AI system first"> |
+| **1. Evals for the tier.** High risk needs accuracy, hallucination rate, bias across groups and human-override rate. A row only passes with a result, an evidence link and a date. The bias ratio is 0.6, under the 0.8 target. | <img src="docs/screens/1-evals-bias-fails.png" width="380" alt="Eval checklist with three passes and the bias row failing"> |
+| **2. The reviewer can't approve.** Approve stays disabled until every eval passes or an exception is logged with a reason. Changing an eval also reset the earlier approval to pending. | <img src="docs/screens/2-approval-blocked.png" width="380" alt="Sign-off tab: can't be approved yet, eval fail on bias, Approve disabled"> |
+| **3. Fixed, re-run, approved.** The bias ratio is now 0.85. The reviewer approves with a note, and the change history records who did what and when, including the reset. | <img src="docs/screens/3-approved-history.png" width="380" alt="Resume Screener High, approved, with change history entries"> |
+| **4. "Not sure" never becomes a low tier.** For the credit model, one oversight answer is missing, so it's **Needs input**, with "at least High once complete" so nobody mistakes it for low risk. | <img src="docs/screens/4-needs-input.png" width="380" alt="Credit limit model: Needs input, High under Annex III section 5, at least High once complete"> |
+| **5. Jira enforces it.** A workflow rule stops AI tickets from moving to Done until their system is assessed, and approved if it's High or Prohibited. | <img src="docs/screens/5-workflow-blocked.png" width="380" alt="Jira ticket Staff mood monitor rated Prohibited, with toast: Transition failed, needs reviewer approval first"> |
 
 ---
 

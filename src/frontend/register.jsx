@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ForgeReconciler, { Stack, Inline, Heading, Text, Select, Label, DynamicTable, Link } from '@forge/react';
+import ForgeReconciler, { Stack, Inline, Text, Select, Label, DynamicTable, Link } from '@forge/react';
 import { invoke } from '@forge/bridge';
 import { TierLozenge, ReviewLozenge, Flags } from './ui';
 
@@ -22,7 +22,6 @@ function App() {
 
   return (
     <Stack space="space.200">
-      <Heading as="h2">AI Register</Heading>
       <Text>
         {rows.length} AI systems · {count((r) => r.tier === 'High' || r.tier === 'Prohibited')} High or Prohibited ·{' '}
         {count((r) => r.status.review === 'pending')} awaiting review · {count((r) => r.status.overdue)} overdue
