@@ -1,0 +1,41 @@
+modules:
+  jira:issuePanel:
+    - key: ai-assessment-panel
+      resource: panel
+      resolver:
+        function: resolver
+      render: native
+      title: AI Risk Assessment
+      icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
+  jira:globalPage:
+    - key: ai-register
+      resource: register
+      resolver:
+        function: resolver
+      render: native
+      title: AI Register
+  jira:workflowValidator:
+    - key: ai-system-linked
+      name: AI ticket has an assessed AI system
+      description: Blocks the transition for AI tickets (label "ai" or "Uses AI?" =
+        Yes) until they are linked to an assessed AI system, approved if High
+        risk.
+      function: validate
+  function:
+    - key: resolver
+      handler: index.handler
+    - key: validate
+      handler: index.validate
+resources:
+  - key: panel
+    path: src/frontend/panel.jsx
+  - key: register
+    path: src/frontend/register.jsx
+permissions:
+  scopes:
+    - read:jira-work
+    - storage:app
+app:
+  runtime:
+    name: nodejs22.x
+  id: ari:cloud:ecosystem::app/4272c2a6-89a0-4f9f-befe-ca7ced38c4aa

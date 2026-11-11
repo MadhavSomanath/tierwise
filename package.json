@@ -1,0 +1,17 @@
+{
+  "name": "ai-governance-register",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Jira Forge app: EU AI Act risk assessment, evals and sign-off per AI system",
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@forge/api": "^8.5.0",
+    "@forge/bridge": "^7.3.0",
+    "@forge/kvs": "^2.1.2",
+    "@forge/react": "^12.5.0",
+    "@forge/resolver": "^2.0.2",
+    "react": "^18.3.1"
+  }
+}
