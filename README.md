@@ -1,93 +1,102 @@
 # Tierwise
 
-**An EU AI Act risk register that lives inside Jira.** Engineers and PMs answer six questions about an AI system. Tierwise gives it a risk tier and explains why. High-risk systems can't ship until their evals pass and a reviewer signs off.
+Tierwise is a Jira app that keeps track of every AI system a team builds and how risky it is under the EU AI Act.
 
-Built on Atlassian Forge and running on a live Jira Cloud site. It's a portfolio project on AI governance, evals and product design.
+You answer six questions about the system and it gives you a tier with the reason behind it. If the system is high risk, it can't ship until the evals pass and someone from compliance signs off. Jira itself won't let the ticket close before that.
+
+I built this as a portfolio project. I wanted something that shows how I think about AI governance, evals and product decisions, and I wanted it running in a real tool rather than as a slide.
 
 <img src="docs/screens/register.png" alt="AI Register page in Jira listing five AI systems: Resume Screener High approved, Customer support chatbot Limited, Meeting notes summariser Minimal, Credit limit model Needs input, Staff mood monitor Prohibited pending">
 
-*The site-wide AI Register: one row per AI system, with its tier, review status, review-by date, flags and linked tickets.*
+This is the register page. Every AI system in the company gets one row, with its tier, review status, when it's due for review, and the tickets linked to it.
 
----
+## Why I built it
 
-## The demo in five screens
+Most teams I've seen handle AI risk in a spreadsheet that someone fills in once and nobody opens again. The work itself happens in Jira, so the risk check should live there too, right next to the tickets.
 
-A team is building a **resume screener**. Six questions put it in the **High** tier, citing Annex III §4. Here's what happens next.
+I came across a Jira Marketplace app doing a simple version of this. It's a questionnaire on each ticket that gives you a risk tier. I liked the idea but wanted to push it further. I wanted to track systems instead of tickets, make evals part of it, and add a sign-off that actually blocks something.
+
+## How it works
+
+Say a team is building a resume screener. Hiring is listed in Annex III of the AI Act, so it comes out as High risk.
 
 | | |
 |---|---|
-| **1. Evals for the tier.** High risk needs accuracy, hallucination rate, bias across groups and human-override rate. A row only passes with a result, an evidence link and a date. The bias ratio is 0.6, under the 0.8 target. | <img src="docs/screens/1-evals-bias-fails.png" width="380" alt="Eval checklist with three passes and the bias row failing"> |
-| **2. The reviewer can't approve.** Approve stays disabled until every eval passes or an exception is logged with a reason. Changing an eval also reset the earlier approval to pending. | <img src="docs/screens/2-approval-blocked.png" width="380" alt="Sign-off tab: can't be approved yet, eval fail on bias, Approve disabled"> |
-| **3. Fixed, re-run, approved.** The bias ratio is now 0.85. The reviewer approves with a note, and the change history records who did what and when, including the reset. | <img src="docs/screens/3-approved-history.png" width="380" alt="Resume Screener High, approved, with change history entries"> |
-| **4. "Not sure" never becomes a low tier.** For the credit model, one oversight answer is missing, so it's **Needs input**, with "at least High once complete" so nobody mistakes it for low risk. | <img src="docs/screens/4-needs-input.png" width="380" alt="Credit limit model: Needs input, High under Annex III section 5, at least High once complete"> |
-| **5. Jira enforces it.** A workflow rule stops AI tickets from moving to Done until their system is assessed, and approved if it's High or Prohibited. | <img src="docs/screens/5-workflow-blocked.png" width="380" alt="Jira ticket Staff mood monitor rated Prohibited, with toast: Transition failed, needs reviewer approval first"> |
+| **The evals have to pass.** High risk means you need numbers for accuracy, hallucination rate, bias across groups and how often humans override it. A result alone doesn't count. You need a link to the eval run and a date as well. Here the bias ratio is 0.6, and the target is 0.8. | <img src="docs/screens/1-evals-bias-fails.png" width="380" alt="Eval checklist with three passes and the bias row failing"> |
+| **So the reviewer can't approve it.** The Approve button stays off until every eval passes. The only other way through is to log an exception and write down why. | <img src="docs/screens/2-approval-blocked.png" width="380" alt="Sign-off tab: can't be approved yet, eval fail on bias, Approve disabled"> |
+| **Fix it, re-run, approve.** Bias goes up to 0.85, and the reviewer approves it with a note. Everything goes into the history, including the fact that changing an eval undid the earlier approval. | <img src="docs/screens/3-approved-history.png" width="380" alt="Resume Screener High, approved, with change history entries"> |
+| **"Not sure" is allowed, but it doesn't let you through.** One answer is missing for this credit model, so it shows Needs input. It also says "at least High once complete", so nobody reads it as low risk. | <img src="docs/screens/4-needs-input.png" width="380" alt="Credit limit model: Needs input, High under Annex III section 5, at least High once complete"> |
+| **Jira enforces it.** An AI ticket can't move to Done until its system has been assessed, and approved too if it's High or Prohibited. | <img src="docs/screens/5-workflow-blocked.png" width="380" alt="Jira ticket Staff mood monitor rated Prohibited, with toast: Transition failed, needs reviewer approval first"> |
 
----
+## How the tier gets decided
 
-## How a tier is decided
-
-| Answer | Tier | Basis |
+| If the system is used for | Tier | Where it comes from |
 |---|---|---|
-| Social scoring, manipulation, emotion recognition at work/school | **Prohibited** | Art. 5 |
-| Hiring, education, credit/insurance, biometrics, critical infrastructure | **High** | Annex III |
-| Chatbot, generated content, or external users interact directly | **Limited** | Art. 50 (disclosure) |
-| Internal productivity, recommendations, spam filtering | **Minimal** | none specific |
-| Any "Not sure" or missing answer | **Needs input** | never guess low |
+| Social scoring, manipulation, emotion recognition at work or school | Prohibited | Article 5 |
+| Hiring, education, credit or insurance, biometrics, critical infrastructure | High | Annex III |
+| A chatbot, generated content, or anything outside users talk to directly | Limited | Article 50 (you have to tell people it's AI) |
+| Internal tools, recommendations, spam filtering | Minimal | Nothing specific |
+| Any question answered "Not sure" or left blank | Needs input | |
 
-- **Several uses:** the highest tier wins.
-- **Re-check needed:** every assessment stores the rules version it was made under. Changing the rules flags old assessments for a re-check.
-- **Review-by dates:** High systems are due for review after 6 months and Limited after 12. Past that date they show as **Overdue** in the register.
+If a system does more than one thing, the highest tier wins.
 
-## Design decisions
+High-risk systems come up for review every 6 months and limited ones every 12. Every assessment saves the version of the rules it was done under. So if the rules change, older assessments get flagged for a re-check.
 
-- **Systems, not tickets.** One AI system spans many tickets. Assessing each ticket would produce conflicting tiers for the same model.
-- **"Not sure" is a valid answer, and it blocks.** It's better to surface a gap than to let someone guess Minimal to get past the form.
-- **Explain every tier.** Each result names the article or annex behind it, so a reviewer can disagree with something specific.
-- **Evidence over checkboxes.** An eval doesn't pass on a number alone: it also needs a link and a run date. Teams can make targets stricter, never looser.
-- **Any change sends it back to review.** Editing answers, evals or an exception after approval resets the system to pending.
-- **One rules file, versioned.** All the policy lives in [`src/rules.js`](src/rules.js), which a compliance owner can read in one sitting.
+## Decisions I made
 
-## What I cut, and why
+**I track systems, not tickets.** One model can touch twenty tickets. If you assess each ticket separately, you end up with the same model rated three different ways.
 
-| Cut | Why |
+**"Not sure" blocks progress.** I'd rather surface a gap than have someone pick Minimal just to get past the form.
+
+**Every tier comes with a reason.** It names the article or annex it's based on, so a reviewer can disagree with something specific.
+
+**A number on its own isn't enough for an eval.** It needs a link and a date. Teams can make a target stricter, but they can't loosen it.
+
+**Changing anything after approval sends it back for review.** That covers the answers, the evals and the exception.
+
+**All the rules live in one file.** It's [`src/rules.js`](src/rules.js), and it's short enough for a compliance person to read through in one go.
+
+## What I left out
+
+| What | Why |
 |---|---|
-| AI-suggested answers | The point is a human owning the assessment. Autofill invites rubber-stamping. |
-| Detecting AI tickets from their text | A label or field is explicit and auditable. Guessing isn't. |
-| Multi-jurisdiction rules | EU AI Act only. One clear rule set beats a shallow many. |
-| Rule-editing screen | The rules are code with tests. A UI can come once there's a rules owner. |
-| **v2:** email reminders, CSV export, JQL search by tier, pulling eval results from CI | Useful, but not needed to prove the workflow. |
+| AI filling in the answers | The whole point is that a person owns the assessment. Autofill makes it too easy to just click through. |
+| Detecting AI tickets from their text | A label is clear and you can audit it. Guessing isn't. |
+| Rules for other countries | EU AI Act only. I'd rather do one properly. |
+| A screen for editing the rules | For now the rules are code with tests. A UI makes sense once there's an actual owner for them. |
+| Email reminders, CSV export, searching by tier, pulling eval results in automatically | All useful, but none of them change whether the core flow works. They're next if I take it further. |
 
-## Known limits
+## Where it falls short
 
-- Answers and eval numbers are self-reported. Evidence links are required, but nobody checks what they point to.
-- On Jira's Free plan the reviewer list is enforced by the app, not by Jira permissions.
-- The rules need an owner to keep them in step with the AI Act and its guidance.
-- **A guide, not legal advice.**
-
----
+- The answers and eval numbers are self-reported. Tierwise checks that there's an evidence link, not what the link actually shows.
+- Jira's free plan doesn't support custom permissions, so the app keeps its own list of reviewers.
+- The rules need someone to keep them current as the AI Act guidance changes.
+- It's a guide. It isn't legal advice.
 
 ## How it's built
 
-| Piece | File |
-|---|---|
-| Rules: questions, tiers, eval templates, review periods | [`src/rules.js`](src/rules.js) |
-| Tests (12, incl. the demo story end to end) | [`test/rules.test.js`](test/rules.test.js) |
-| Backend: storage, sign-off, history, workflow validator | [`src/index.js`](src/index.js) |
-| Ticket panel (UI Kit) | [`src/frontend/panel.jsx`](src/frontend/panel.jsx) |
-| Site-wide AI Register page | [`src/frontend/register.jsx`](src/frontend/register.jsx) |
+It runs on Atlassian Forge, so there's no separate server, and the data stays in Forge's own storage.
 
-Forge modules: `jira:issuePanel`, `jira:globalPage`, `jira:workflowValidator`. Storage is Forge KVS, with no external servers.
+| Part | File |
+|---|---|
+| Questions, tiers, eval templates, review periods | [`src/rules.js`](src/rules.js) |
+| Tests (12, including the resume screener story end to end) | [`test/rules.test.js`](test/rules.test.js) |
+| Backend: storage, sign-off, history, the workflow rule | [`src/index.js`](src/index.js) |
+| The panel on each ticket | [`src/frontend/panel.jsx`](src/frontend/panel.jsx) |
+| The register page | [`src/frontend/register.jsx`](src/frontend/register.jsx) |
+
+To run the tests:
 
 ```bash
 npm test
 ```
 
 <details>
-<summary><b>Run it on your own Jira site</b></summary>
+<summary><b>Setting it up on your own Jira</b></summary>
 
-1. Create a free Jira Cloud site and a **company-managed** Scrum space (key `HR`).
+1. Make a free Jira Cloud site and a **company-managed** Scrum space. Team-managed spaces won't let you add the workflow rule.
 2. Create an API token at id.atlassian.com/manage-profile/security/api-tokens.
-3. Install the CLI and log in:
+3. Install the Forge CLI and log in:
    ```bash
    npm install -g --allow-scripts=@forge/cli,cloudflared,keytar @forge/cli
    ```
@@ -104,11 +113,11 @@ npm test
    ```bash
    forge install --site <your-site>.atlassian.net --product jira
    ```
-5. Name the reviewers (accountIds, comma-separated), then deploy again:
+5. Add yourself as a reviewer (your accountId), then deploy again:
    ```bash
    forge variables set REVIEWERS <accountId>
    ```
-6. Add the rule: **Space settings → Workflows → edit → "Done" transition → Validate details → + → "AI ticket has an assessed AI system"**, then **Update workflow**.
-7. Tickets count as AI if they have the label `ai`, or if an optional "Uses AI?" field is set to Yes.
+6. Add the rule: **Space settings → Workflows → edit → the "Done" transition → Validate details → + → "AI ticket has an assessed AI system"**, then **Update workflow**.
+7. A ticket counts as AI if it has the `ai` label, or if you add a "Uses AI?" field and set it to Yes.
 
 </details>
