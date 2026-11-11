@@ -44,15 +44,11 @@ High-risk systems come up for review every 6 months and limited ones every 12. E
 
 ## Decisions I made
 
-**I track systems, not tickets.** One model can touch twenty tickets. If you assess each ticket separately, you end up with the same model rated three different ways.
-
-**"Not sure" blocks progress.** I'd rather surface a gap than have someone pick Minimal just to get past the form.
-
-**Every tier comes with a reason.** It names the article or annex it's based on, so a reviewer can disagree with something specific.
-
-**A number on its own isn't enough for an eval.** It needs a link and a date. Teams can make a target stricter, but they can't loosen it.
-
-**Changing anything after approval sends it back for review.** That covers the answers, the evals and the exception.
+ - **Track systems, not tickets.** One model can touch twenty tickets. If you assess each ticket separately, you end up with the same model rated three different ways.
+ - **"Not sure" blocks progress.** I'd rather surface a gap than have someone pick Minimal just to get past the form.
+ - **Every tier comes with a reason.** It names the article or annex it's based on, so a reviewer can disagree with something specific.
+ - **A number on its own isn't enough for an eval.** It needs a link and a date. Teams can make a target stricter, but they can't loosen it.
+ - **Changing anything after approval sends it back for review.** That covers the answers, the evals and the exception.
 
 **All the rules live in one file.** It's [`src/rules.js`](src/rules.js), and it's short enough for a compliance person to read through in one go.
 
