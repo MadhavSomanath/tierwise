@@ -4,7 +4,7 @@ Tierwise is a Jira app that keeps track of every AI system a team builds and how
 
 You answer six questions about the system and it gives you a tier with the reason behind it. If the system is high risk, it can't ship until the evals pass and someone from compliance signs off. Jira itself won't let the ticket close before that.
 
-I built this as a portfolio project. I wanted something that shows how I think about AI governance, evals and product decisions, and I wanted it running in a real tool rather than as a slide.
+I built this to showcase I think about AI governance, evals and product decisions, and I wanted it running in a real tool rather than as a slide.
 
 <img src="docs/screens/register.png" alt="AI Register page in Jira listing five AI systems: Resume Screener High approved, Customer support chatbot Limited, Meeting notes summariser Minimal, Credit limit model Needs input, Staff mood monitor Prohibited pending">
 
