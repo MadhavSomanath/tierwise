@@ -12,6 +12,8 @@ I built this to showcase how I think about AI governance, evals and product deci
 
 This is the register page. Every AI system in the company gets one row, with its tier, review status, when it's due for review, and the tickets linked to it.
 
+The product thinking behind it is written up in the [PRD](PRD.md) and an 8-slide [case study deck (PDF)](docs/case-study.pdf).
+
 ## Why I built it
 
 Most teams I've seen handle AI risk in a spreadsheet that someone fills in once and nobody opens again. The work itself happens in Jira, so the risk check should live there too, right next to the tickets.
